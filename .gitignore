@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+API/reactivities.db-wal
+API/reactivities.db-shm
+client-app/public/assets/Thumbs.db
