@@ -399,3 +399,4 @@ FodyWeavers.xsd
 API/reactivities.db-wal
 API/reactivities.db-shm
 client-app/public/assets/Thumbs.db
+API/reactivities.db

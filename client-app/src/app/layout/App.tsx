@@ -1,70 +1,31 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Container, Header, List } from "semantic-ui-react";
-import { Activity } from "../models/activity";
+import { useEffect, useRef } from "react";
+import { Container } from "semantic-ui-react";
 import NavBar from "./NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
-import {v4 as uuid} from 'uuid';
+import LoadingComponent from "./loadingComponents";
+import { useStore } from "../stores/store";
+import { observer } from "mobx-react-lite";
 
 function App() {
-  const [activities, setActivites] = useState<Activity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-  const [editMode, setEditMode] = useState(false);
-
+  const { activityStore } = useStore();
+  const once = useRef(false); // quick fix
   useEffect(() => {
-    axios.get<Activity[]>("http://localhost:5000/api/activities").then((response) => {
-      setActivites(response.data);
-    });
-  }, []);
+    if (once.current === false){ // quick fix
+      activityStore.loadingActivities();
+      once.current = true; // quick fix
+    }
+  }, [activityStore]);
 
-  function handleSelectActivity(id: string) {
-    setSelectedActivity(activities.find((x) => x.id === id));
-  }
-
-  function handleCancelSelectedActivity() {
-    setSelectedActivity(undefined);
-  }
-
-  function handleFormOpen(id?: string) {
-    id ? handleSelectActivity(id) : handleCancelSelectedActivity();
-    setEditMode(true);
-  }
-
-  function handleFormClose() {
-    setEditMode(false);
-  }
-
-  function handleCreateOrEditActivity(activity: Activity) {
-    activity.id
-      ? setActivites([...activities.filter((x) => x.id !== activity.id), activity])
-      : setActivites([...activities, {...activity, id: uuid()}]);
-      setEditMode(false);
-      setSelectedActivity(activity);
-  }
-
-  function handleDeleteActivity(id: string) {
-    setActivites([...activities.filter(x => x.id !== id)]);
-
-  }
+  if (activityStore.loadingInitial) return <LoadingComponent content={"Loading app"} />;
 
   return (
     <>
-      <NavBar openForm={handleFormOpen} />
+      <NavBar />
       <Container style={{ marginTop: "7em" }}>
-        <ActivityDashboard
-          activities={activities}
-          selectedActivity={selectedActivity}
-          selectActivity={handleSelectActivity}
-          cancelSelectActivity={handleCancelSelectedActivity}
-          editMode={editMode}
-          openForm={handleFormOpen}
-          closeForm={handleFormClose}
-          createOrEdit={handleCreateOrEditActivity}
-          deleteActivity={handleDeleteActivity}
-        />
+        <ActivityDashboard />
       </Container>
     </>
   );
 }
 
-export default App;
+export default observer(App);
