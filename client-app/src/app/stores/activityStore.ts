@@ -2,8 +2,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../models/activity";
 import agent from "../api/agent";
 import { v4 as uuid } from "uuid";
-import { act } from "react-dom/test-utils";
-
 export default class ActivityStore {
   activitiesRegistery = new Map<string, Activity>();
   selectedActivity: Activity | undefined = undefined;
@@ -18,6 +16,16 @@ export default class ActivityStore {
   get activitiesByDate() {
     return Array.from(this.activitiesRegistery.values()).sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
+    );
+  }
+
+  get groupedActivites() {
+    return Object.entries(
+      this.activitiesByDate.reduce((activities, activity) => {
+        const date = activity.date;
+        activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+        return activities;
+      }, {} as { [key: string]: Activity[] })
     );
   }
 
