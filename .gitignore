@@ -1,2 +1,7 @@
 \bin
 \obj
+
+*.bin
+*.v2
+*.suo
+*.vsidx
