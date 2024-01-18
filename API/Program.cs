@@ -12,10 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityService(builder.Configuration);
 
 var app = builder.Build();
-
-builder.Services.AddIdentityService(builder.Configuration);
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
