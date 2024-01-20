@@ -3,5 +3,5 @@
 \.vs
 \.vscode
 \.github
-.db-shm
-.db-wal
+*.db-shm
+*.db-wal
