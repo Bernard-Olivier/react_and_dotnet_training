@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Activity } from "../models/activity";
-import { act } from "react-dom/test-utils";
 import { toast } from "react-toastify";
 import { router } from "../router/routes";
 import { store } from "../stores/store";
+import { User, UserFormValues } from "../models/user";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -72,8 +72,15 @@ const Activities = {
   delete: (id: string) => axios.delete<void>(`/activities/${id}`),
 };
 
+const Account = {
+  current: () => requests.get('/account'),
+  login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+  register: (user: UserFormValues) => requests.post<User>('/account/register', user)
+}
+
 const agent = {
   Activities,
+  Account
 };
 
 export default agent;
